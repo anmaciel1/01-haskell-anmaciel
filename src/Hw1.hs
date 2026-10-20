@@ -29,8 +29,8 @@ import Prelude  hiding (replicate, sum, reverse)
 -- []
 
 listReverse :: [a] -> [a]
-listReverse xs = error "TBD:listReverse"
-
+listReverse [] = []
+listReverse (x : rest) = listReverse rest ++ [x]
 
 -- | Determine whether a string is a palindrome (i.e. spelled the same
 --   both backwards and forwards).
@@ -45,7 +45,8 @@ listReverse xs = error "TBD:listReverse"
 -- True
 
 palindrome :: String -> Bool
-palindrome w = error "TBD:palindrome"
+palindrome "" = True
+palindrome w = w == listReverse w
 
 
 -- | `digitsOfInt n` should return `[]` if `n` is not positive,
@@ -62,8 +63,9 @@ palindrome w = error "TBD:palindrome"
 -- []
 
 digitsOfInt :: Integer -> [Integer]
-digitsOfInt n = error "TBD:digitsOfInt"
-
+digitsOfInt n
+    | n <= 0 = []
+    | otherwise = digitsOfInt (n `div` 10) ++ [n `mod` 10]
 
 -- | `digitsOfInts xs` should return a list containing all of the digits
 --   for every number in `xs`, in the same order they appeared in `xs`.
@@ -75,7 +77,8 @@ digitsOfInt n = error "TBD:digitsOfInt"
 -- []
 
 digitsOfInts :: [Integer] -> [Integer]
-digitsOfInts xs = error "TBD:digitsOfInts"
+digitsOfInts [] = []
+digitsOfInts (x : xs) = digitsOfInt x ++ digitsOfInts xs
 
 
 -- | Doubles every other integer in a list,
@@ -91,7 +94,11 @@ digitsOfInts xs = error "TBD:digitsOfInts"
 -- []
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther xs = error "TBD:doubleEveryOther"
+doubleEveryOther (x : y : rest) = x : y * 2 : doubleEveryOther rest
+doubleEveryOther [x] = [x]
+doubleEveryOther [] = []
+
+    
 
 
 -- | Sum the elements of a list
@@ -106,8 +113,8 @@ doubleEveryOther xs = error "TBD:doubleEveryOther"
 -- 36
 
 sumList :: [Integer] -> Integer
-sumList xs = error "TBD:sumList"
-
+sumList [] = 0
+sumList (x : xs) = x + sumList xs
 
 -- | Validate a credit card number
 --
@@ -118,4 +125,6 @@ sumList xs = error "TBD:sumList"
 -- False
 
 validateCardNumber :: Integer -> Bool
-validateCardNumber = error "TBD:validateCardNumber"
+validateCardNumber x
+    | x <= 0 = False
+    | otherwise = sumList (digitsOfInts(doubleEveryOther (listReverse (digitsOfInt x)))) `mod` 10 == 0
